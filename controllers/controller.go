@@ -36,7 +36,7 @@ func GetOrderAll(ctx *gin.Context) {
 
 	// Jika gagal
 	if err != nil {
-		res.Status = "Get Order Gagal"
+		res.Status = "Get All Order Gagal"
 		res.ResponseCode = "400"
 	}
 
@@ -66,7 +66,31 @@ func GetOrder(ctx *gin.Context) {
 }
 
 func UpdateOrder(ctx *gin.Context) {
+	var req requests.Request
+	var res requests.Response
 
+	// Getting id
+	id, errstr := strconv.Atoi(ctx.Param("orderID"))
+
+	if errstr != nil {
+		res.Status = "Update Order Gagal"
+		res.ResponseCode = "400"
+	}
+
+	// Check Error
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+	}
+
+	res, err := services.UpdateOrder(req, id)
+
+	// Jika gagal
+	if err != nil {
+		res.Status = "Update Order Gagal"
+		res.ResponseCode = "400"
+	}
+
+	ctx.JSON(http.StatusOK, res)
 }
 
 func DeleteOrder(ctx *gin.Context) {

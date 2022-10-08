@@ -15,7 +15,6 @@ type Item struct {
 }
 
 type Response struct {
-	Item
 	Data         Request `json:"data"`
 	DateTrans    string  `json:"dateTrans"`
 	OrderID      string  `json:"orderID"`
@@ -33,9 +32,9 @@ type ResponseGet struct {
 }
 
 type ResponseGetOne struct {
-	DateTrans    string         `json:"dateTrans"`
+	DateTrans    string       `json:"dateTrans"`
 	Orders       models.Order `json:"order"`
-	ResponseCode string         `json:"responseCode"`
-	Status       string         `json:"status"`
-	Total        int64          `json:"total"`
+	ResponseCode string       `json:"responseCode"`
+	Status       string       `json:"status"`
+	Total        int64        `json:"total"`
 }

@@ -73,8 +73,6 @@ func AllOrder() (requests.ResponseGet, error) {
 	// Get All order
 	db.Preload("DetailItem").Find(&order)
 
-	fmt.Println("tes: ", order)
-
 	// Response
 	return requests.ResponseGet{
 		DateTrans:    fmt.Sprintf("%v", dateTimeEpoch(currentTime())),
@@ -93,10 +91,8 @@ func Order(id int) (requests.ResponseGetOne, error) {
 	// Initiating Order
 	var order models.Order
 
-	// Get All order
+	// Get One order
 	db.Preload("DetailItem").Find(&order, id)
-
-	fmt.Println("tes: ", id)
 
 	// Response
 	return requests.ResponseGetOne{
@@ -105,6 +101,66 @@ func Order(id int) (requests.ResponseGetOne, error) {
 		ResponseCode: "00",
 		Status:       "Success",
 		Total:        1,
+	}, nil
+}
+
+func UpdateOrder(req requests.Request, id int) (requests.Response, error) {
+	var res requests.Response
+
+	// Dapatkan Database
+	db := database.GetDb()
+
+	// Initiating Order
+	var oldOrder models.Order
+
+	// Get One order
+	db.Preload("DetailItem").Find(&oldOrder, id)
+
+	// Items
+	var items []models.Item
+
+	// Declaring total
+	var total int64
+	for _, v_item := range req.Items {
+		// Defining Item
+		var item models.Item
+
+		// Fill Item
+		item.OrderItem = id
+		item.Price = v_item.Price
+		item.Quantity = int(v_item.Quantity)
+		item.ItemCode = v_item.ItemCode
+		item.Description = v_item.Description
+
+		db.Model(&models.Item{}).Where("order_item=?", id).Updates(&item)
+
+		// Adding to array
+		items = append(items, item)
+		total += (v_item.Quantity * v_item.Price)
+	}
+
+	// Calling Order
+	order := models.Order{
+		OrderID:      oldOrder.OrderID,
+		CustomerName: map[bool]string{true: oldOrder.CustomerName, false: req.CustomerName}[req.CustomerName == ""],
+		OrderAt:      map[bool]int64{true: 0, false: oldOrder.OrderAt}[oldOrder.OrderAt == 0],
+		DetailItem:   items,
+	}
+
+	err := db.Model(&models.Order{}).Where("id=?", id).Updates(&order).Error
+
+	// Jika Error
+	if err != nil {
+		return res, err
+	}
+
+	return requests.Response{
+		Data:         req,
+		DateTrans:    fmt.Sprintf("%v", dateTimeEpoch(currentTime())),
+		OrderID:      order.OrderID,
+		ResponseCode: "00",
+		Status:       "Success",
+		Total:        total,
 	}, nil
 }
 
