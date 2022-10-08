@@ -162,6 +162,30 @@ func UpdateOrder(req requests.Request, id int) (requests.Response, error) {
 	}, nil
 }
 
+func Delete(id int) (requests.ResponseGetOne, error) {
+
+	// Dapatkan Database
+	db := database.GetDb()
+
+	// Initiating Order
+	var order models.Order
+
+	// Delete Item
+	db.Where("order_item=?", id).Delete(&models.Item{})
+
+	// Delete Order
+	db.Where("id=?", id).Delete(&models.Order{})
+
+	// Response
+	return requests.ResponseGetOne{
+		DateTrans:    "",
+		Orders:       order,
+		ResponseCode: "00",
+		Status:       "Success",
+		Total:        0,
+	}, nil
+}
+
 // Generate ID
 func generateRandomOrderId() string {
 	b := make([]byte, 16)

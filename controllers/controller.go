@@ -94,5 +94,23 @@ func UpdateOrder(ctx *gin.Context) {
 }
 
 func DeleteOrder(ctx *gin.Context) {
+	var res requests.ResponseGetOne
 
+	// Deleting id
+	id, errstr := strconv.Atoi(ctx.Param("orderID"))
+
+	if errstr != nil {
+		res.Status = "Delete Order Gagal"
+		res.ResponseCode = "400"
+	}
+
+	res, err := services.Delete(id)
+
+	// Jika gagal
+	if err != nil {
+		res.Status = "Delete Order Gagal"
+		res.ResponseCode = "400"
+	}
+
+	ctx.JSON(http.StatusOK, res)
 }
