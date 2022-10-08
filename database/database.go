@@ -2,9 +2,13 @@ package database
 
 import (
 	"Assignment_2/models"
+	"fmt"
+	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 var (
@@ -13,10 +17,17 @@ var (
 )
 
 func init() {
-	// To Do
-
 	// DSN
-	db, err = gorm.Open(mysql.Open("root:@tcp(127.0.0.1:3306)/dts_golang?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"),
+	)
+
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to database")
 	}

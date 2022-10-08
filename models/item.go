@@ -10,5 +10,4 @@ type Item struct {
 	Quantity    int
 	Price       int64 `gorm:"column:harga"`
 	OrderItem   int
-	Order       Order `gorm:"foreignKey:OrderItem"`
 }

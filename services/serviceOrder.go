@@ -116,8 +116,11 @@ func UpdateOrder(req requests.Request, id int) (requests.Response, error) {
 	// Get One order
 	db.Preload("DetailItem").Find(&oldOrder, id)
 
-	// Items
-	var items []models.Item
+	// Delete Items
+	db.Where("order_item=?", id).Delete(&models.Item{})
+
+	// Detail Item
+	oldOrder.DetailItem = []models.Item{}
 
 	// Declaring total
 	var total int64
@@ -132,22 +135,17 @@ func UpdateOrder(req requests.Request, id int) (requests.Response, error) {
 		item.ItemCode = v_item.ItemCode
 		item.Description = v_item.Description
 
-		db.Model(&models.Item{}).Where("order_item=?", id).Updates(&item)
-
-		// Adding to array
-		items = append(items, item)
+		// Save New Item
+		db.Save(&item)
 		total += (v_item.Quantity * v_item.Price)
 	}
 
 	// Calling Order
-	order := models.Order{
-		OrderID:      oldOrder.OrderID,
-		CustomerName: map[bool]string{true: oldOrder.CustomerName, false: req.CustomerName}[req.CustomerName == ""],
-		OrderAt:      map[bool]int64{true: 0, false: oldOrder.OrderAt}[oldOrder.OrderAt == 0],
-		DetailItem:   items,
-	}
+	oldOrder.CustomerName = map[bool]string{true: oldOrder.CustomerName, false: req.CustomerName}[req.CustomerName == ""]
+	oldOrder.OrderAt = map[bool]int64{true: 0, false: oldOrder.OrderAt}[oldOrder.OrderAt == 0]
 
-	err := db.Model(&models.Order{}).Where("id=?", id).Updates(&order).Error
+	// Save Update Order
+	err := db.Save(&oldOrder).Error
 
 	// Jika Error
 	if err != nil {
@@ -157,7 +155,7 @@ func UpdateOrder(req requests.Request, id int) (requests.Response, error) {
 	return requests.Response{
 		Data:         req,
 		DateTrans:    fmt.Sprintf("%v", dateTimeEpoch(currentTime())),
-		OrderID:      order.OrderID,
+		OrderID:      oldOrder.OrderID,
 		ResponseCode: "00",
 		Status:       "Success",
 		Total:        total,
