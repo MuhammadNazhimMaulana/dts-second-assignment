@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"Assignment_2/apimodels"
+	"Assignment_2/requests"
 	"Assignment_2/services"
 	"net/http"
 
@@ -9,8 +9,8 @@ import (
 )
 
 func CreateOrder(ctx *gin.Context) {
-	var req apimodels.Request
-	var res apimodels.Response
+	var req requests.Request
+	var res requests.Response
 
 	// Check Error
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -29,7 +29,7 @@ func CreateOrder(ctx *gin.Context) {
 }
 
 func GetOrderAll(ctx *gin.Context) {
-	var res apimodels.ResponseGet
+	var res requests.ResponseGet
 
 	res, err := services.AllOrder()
 

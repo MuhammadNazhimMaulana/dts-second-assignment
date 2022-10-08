@@ -1,17 +1,17 @@
 package services
 
 import (
-	"Assignment_2/apimodels"
 	"Assignment_2/database"
 	"Assignment_2/models"
+	"Assignment_2/requests"
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"time"
 )
 
-func SaveOrder(req apimodels.Request) (apimodels.Response, error) {
-	var res apimodels.Response
+func SaveOrder(req requests.Request) (requests.Response, error) {
+	var res requests.Response
 
 	// Dapatkan Database
 	db := database.GetDb()
@@ -52,7 +52,7 @@ func SaveOrder(req apimodels.Request) (apimodels.Response, error) {
 		return res, errdb
 	}
 
-	return apimodels.Response{
+	return requests.Response{
 		Data:         req,
 		DateTrans:    fmt.Sprintf("%v", dateTimeEpoch(currentTime())),
 		OrderID:      order.OrderID,
@@ -62,21 +62,21 @@ func SaveOrder(req apimodels.Request) (apimodels.Response, error) {
 	}, nil
 }
 
-func AllOrder() (apimodels.ResponseGet, error) {
+func AllOrder() (requests.ResponseGet, error) {
 
 	// Dapatkan Database
 	db := database.GetDb()
 
 	// Initiating Order
-	var order []apimodels.Order
+	var order []requests.Order
 
 	// Get All order
-	db.Find(&order)
+	db.Joins("left JOIN items ON items.order_item = orders.id").Find(&order)
 
 	fmt.Println("tes: ", order)
 
 	// Response
-	return apimodels.ResponseGet{
+	return requests.ResponseGet{
 		DateTrans:    fmt.Sprintf("%v", dateTimeEpoch(currentTime())),
 		Orders:       order,
 		ResponseCode: "00",

@@ -1,4 +1,4 @@
-package apimodels
+package requests
 
 type Request struct {
 	CustomerName string `json:"customerName"`
@@ -8,6 +8,7 @@ type Request struct {
 type Order struct {
 	CustomerName string `json:"customerName"`
 	OrderID      string `json:"order_id"`
+	DetailItem   []Item `gorm:"-"`
 }
 
 type Item struct {
