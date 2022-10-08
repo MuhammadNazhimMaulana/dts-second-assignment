@@ -31,3 +31,11 @@ type ResponseGet struct {
 	Status       string         `json:"status"`
 	Total        int64          `json:"total"`
 }
+
+type ResponseGetOne struct {
+	DateTrans    string         `json:"dateTrans"`
+	Orders       models.Order `json:"order"`
+	ResponseCode string         `json:"responseCode"`
+	Status       string         `json:"status"`
+	Total        int64          `json:"total"`
+}

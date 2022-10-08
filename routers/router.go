@@ -12,7 +12,8 @@ func GetRouter() *gin.Engine {
 	// Access Point
 	router.POST("/orders", controllers.CreateOrder)
 	router.GET("/orders", controllers.GetOrderAll)
-	router.PUT("/orders/{orderID}", controllers.UpdateOrder)
-	router.DELETE("/orders/{orderID}", controllers.DeleteOrder)
+	router.GET("/orders/:orderID", controllers.GetOrder)
+	router.PUT("/orders/:orderID", controllers.UpdateOrder)
+	router.DELETE("/orders/:orderID", controllers.DeleteOrder)
 	return router
 }

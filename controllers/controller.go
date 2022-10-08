@@ -4,6 +4,7 @@ import (
 	"Assignment_2/requests"
 	"Assignment_2/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,6 +33,28 @@ func GetOrderAll(ctx *gin.Context) {
 	var res requests.ResponseGet
 
 	res, err := services.AllOrder()
+
+	// Jika gagal
+	if err != nil {
+		res.Status = "Get Order Gagal"
+		res.ResponseCode = "400"
+	}
+
+	ctx.JSON(http.StatusOK, res)
+}
+
+func GetOrder(ctx *gin.Context) {
+	var res requests.ResponseGetOne
+
+	// Getting id
+	id, errstr := strconv.Atoi(ctx.Param("orderID"))
+
+	if errstr != nil {
+		res.Status = "Get Order Gagal"
+		res.ResponseCode = "400"
+	}
+
+	res, err := services.Order(id)
 
 	// Jika gagal
 	if err != nil {

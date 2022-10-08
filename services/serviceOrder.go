@@ -85,6 +85,29 @@ func AllOrder() (requests.ResponseGet, error) {
 	}, nil
 }
 
+func Order(id int) (requests.ResponseGetOne, error) {
+
+	// Dapatkan Database
+	db := database.GetDb()
+
+	// Initiating Order
+	var order models.Order
+
+	// Get All order
+	db.Preload("DetailItem").Find(&order, id)
+
+	fmt.Println("tes: ", id)
+
+	// Response
+	return requests.ResponseGetOne{
+		DateTrans:    fmt.Sprintf("%v", dateTimeEpoch(currentTime())),
+		Orders:       order,
+		ResponseCode: "00",
+		Status:       "Success",
+		Total:        1,
+	}, nil
+}
+
 // Generate ID
 func generateRandomOrderId() string {
 	b := make([]byte, 16)
