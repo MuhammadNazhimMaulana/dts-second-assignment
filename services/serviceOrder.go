@@ -68,10 +68,10 @@ func AllOrder() (requests.ResponseGet, error) {
 	db := database.GetDb()
 
 	// Initiating Order
-	var order []requests.Order
+	var order []models.Order
 
 	// Get All order
-	db.Joins("left JOIN items ON items.order_item = orders.id").Find(&order)
+	db.Preload("DetailItem").Find(&order)
 
 	fmt.Println("tes: ", order)
 
