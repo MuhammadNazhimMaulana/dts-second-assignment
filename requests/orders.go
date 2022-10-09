@@ -17,7 +17,7 @@ type Item struct {
 type Response struct {
 	Data         Request `json:"data"`
 	DateTrans    string  `json:"dateTrans"`
-	OrderID      string  `json:"orderID"`
+	OrderID      uint    `json:"orderID"`
 	ResponseCode string  `json:"responseCode"`
 	Status       string  `json:"status"`
 	Total        int64   `json:"total"`

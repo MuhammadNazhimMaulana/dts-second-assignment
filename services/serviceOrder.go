@@ -4,7 +4,6 @@ import (
 	"Assignment_2/database"
 	"Assignment_2/models"
 	"Assignment_2/requests"
-	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -39,7 +38,6 @@ func SaveOrder(req requests.Request) (requests.Response, error) {
 
 	// Calling Order
 	order := models.Order{
-		OrderID:      generateRandomOrderId(),
 		CustomerName: req.CustomerName,
 		OrderAt:      0,
 		DetailItem:   items,
@@ -174,7 +172,7 @@ func Delete(id int) (requests.ResponseGetOne, error) {
 	db.Where("order_item=?", id).Delete(&models.Item{})
 
 	// Delete Order
-	db.Where("id=?", id).Delete(&models.Order{})
+	db.Where("order_id=?", id).Delete(&models.Order{})
 
 	// Response
 	return requests.ResponseGetOne{
@@ -184,19 +182,6 @@ func Delete(id int) (requests.ResponseGetOne, error) {
 		Status:       "Success",
 		Total:        0,
 	}, nil
-}
-
-// Generate ID
-func generateRandomOrderId() string {
-	b := make([]byte, 16)
-
-	_, err := rand.Read(b)
-
-	if err != nil {
-		return fmt.Sprintf("%v", currentTime())
-	}
-
-	return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
 // Epoch Time
