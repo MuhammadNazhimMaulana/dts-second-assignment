@@ -160,13 +160,10 @@ func UpdateOrder(req requests.Request, id int) (requests.Response, error) {
 	}, nil
 }
 
-func Delete(id int) (requests.ResponseGetOne, error) {
+func Delete(id int) (requests.ResponseDelete, error) {
 
 	// Dapatkan Database
 	db := database.GetDb()
-
-	// Initiating Order
-	var order models.Order
 
 	// Delete Item
 	db.Where("order_item=?", id).Delete(&models.Item{})
@@ -175,12 +172,10 @@ func Delete(id int) (requests.ResponseGetOne, error) {
 	db.Where("order_id=?", id).Delete(&models.Order{})
 
 	// Response
-	return requests.ResponseGetOne{
-		DateTrans:    "",
-		Orders:       order,
+	return requests.ResponseDelete{
+		Message:      "Delete Data Berhasil",
 		ResponseCode: "00",
 		Status:       "Success",
-		Total:        0,
 	}, nil
 }
 

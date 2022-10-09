@@ -38,3 +38,9 @@ type ResponseGetOne struct {
 	Status       string       `json:"status"`
 	Total        int64        `json:"total"`
 }
+
+type ResponseDelete struct {
+	Message      string `json:"message"`
+	ResponseCode string `json:"responseCode"`
+	Status       string `json:"status"`
+}

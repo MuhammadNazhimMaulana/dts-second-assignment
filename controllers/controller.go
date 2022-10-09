@@ -94,7 +94,7 @@ func UpdateOrder(ctx *gin.Context) {
 }
 
 func DeleteOrder(ctx *gin.Context) {
-	var res requests.ResponseGetOne
+	var res requests.ResponseDelete
 
 	// Deleting id
 	id, errstr := strconv.Atoi(ctx.Param("orderID"))
